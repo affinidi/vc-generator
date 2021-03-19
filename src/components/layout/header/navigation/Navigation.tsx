@@ -5,6 +5,7 @@ import {routes} from 'constants/routes'
 import 'components/layout/header/navigation/Navigation.scss'
 import AppContext from 'context/app';
 import UserLogout from 'components/user/logout/Logout';
+import AffinidiLogo from 'assets/images/affinidi-logo.png';
 
 /**
  * Stateful component responsible for rendering the top navigation of this application.
@@ -29,7 +30,7 @@ const LayoutHeaderNavigation = () => {
       <Container>
         <NavbarBrand>
           <Link to={routes.ROOT}>
-            <img src='https://via.placeholder.com/200x60?text=Your logo' alt='Your logo'/>
+            <img src={AffinidiLogo} alt="logo" width="40px" />
           </Link>
         </NavbarBrand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

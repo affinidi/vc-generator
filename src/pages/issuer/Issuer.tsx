@@ -1,11 +1,15 @@
 import React, {useContext, useState} from 'react';
 import AppContext from 'context/app';
-import {Button, FormControl, FormGroup, FormLabel} from 'react-bootstrap';
+import {Button, Form, FormControl, FormGroup, FormLabel} from 'react-bootstrap';
 import ApiService from 'utils/apiService';
 import {employmentVcData} from 'utils/vc-data-examples/employment';
 import {UnsignedW3cCredential, W3cCredential} from 'utils/apis';
 import 'pages/issuer/Issuer.scss'
 import ReactJson from 'react-json-view';
+import AffinidiVCTypeSelectList from 'components/vcData/AffindiVCTypeSelectList'
+import JSONEditor from 'components/editor/Editor';
+import * as allVCs from 'utils/vc-data-examples/index'
+import { cloneDeep, merge } from 'lodash-es'
 
 interface State {
     currentUnsignedVC: UnsignedW3cCredential | null,
@@ -13,8 +17,34 @@ interface State {
     isCurrentVCVerified: boolean,
 }
 
+const removeProp = (obj: any, propToDelete: string) => {
+  for (let property in obj) {
+    if (obj.hasOwnProperty(property)) {
+      if (property === propToDelete) {
+        delete obj[property];
+      } else if (typeof obj[property] == "object") {
+        removeProp(obj[property], propToDelete);
+      }
+    }
+  }
+  return obj
+}
+
+const initialiseVCData = (vcData:any) => {
+  for (let vc in vcData) {
+    vcData[vc] = vcData[vc].data
+    vcData[vc] = removeProp(vcData[vc], '@type')
+  }
+  return vcData
+  
+}
+
   
 const Issuer = () => {
+  
+  const allDATA: any = initialiseVCData(JSON.parse(JSON.stringify(allVCs)))
+  const allVCCopy: any = JSON.parse(JSON.stringify(allVCs))
+  const VCoptions = Object.keys(allDATA)
 
     const [state, setState] = useState<State>({
         currentUnsignedVC: null,
@@ -23,56 +53,25 @@ const Issuer = () => {
       })
       const {appState} = useContext(AppContext);
       const [inputDID, setinputDID] = useState(appState.didToken || '')
-      const [VCschemaData, setVCschemaData] = useState<any>(JSON.stringify(employmentVcData))
-      console.log('---ssss');
-      
+      const [sampleVCData, setsampleVCData] = useState<any>(allDATA['NameCredentialPersonV1'])
+      const [VCtype, setVCtype] = useState('NameCredentialPersonV1')
     
       /**
-       * Get stored VCs from user cloud wallet on component mount.
+       * Function for issuing an unsigned VC.
        * */
-    //   useEffect(() => {
-    //     const getSavedVCs = async () => {
-    //       try {
-    //         const arrayOfStoredVCs = await ApiService.getSavedVCs();
-    
-    //         setState({
-    //           ...state,
-    //           storedVCs: [...arrayOfStoredVCs],
-    //           isLoadingStoredVCs: false
-    //         })
-    //       } catch (error) {
-    //         ApiService.alertWithBrowserConsole(error.message)
-    
-    //         setState({
-    //           ...state,
-    //           isLoadingStoredVCs: false
-    //         })
-    //       }
-    //     }
-    
-    //     getSavedVCs();
-    //   }, []);
-
-    const isJson = (str: string) => {
-      try {
-          JSON.parse(str);
-      } catch (e) {
-          return false;
-      }
-      return true;
-  }
-    
-      /**
-       * Function for issuing an unsigned employment VC.
-       * */
-      const issueEmploymentPersonVC = async () => {
+      const issueUnsignedVC = async () => {
         try {
-          if (isJson(VCschemaData)) {
-            const example = {...JSON.parse(VCschemaData)}
-    
-            example.holderDid = inputDID || appState.didToken || '';
+
+          const payload = {
+            type: VCtype,
+            data: sampleVCData,
+            holderDid: inputDID || appState.didToken || ''
+          }
+
+          console.log(merge(allVCCopy[VCtype], payload));
+          
       
-            const {unsignedVC} = await ApiService.issueUnsignedVC(example);
+            const {unsignedVC} = await ApiService.issueUnsignedVC(merge(allVCCopy[VCtype], payload));
       
             setState({
               ...state,
@@ -82,7 +81,6 @@ const Issuer = () => {
             })
       
             alert('Unsigned VC successfully created.');
-          }
         } catch (error) {
           ApiService.alertWithBrowserConsole(error.message);
         }
@@ -117,14 +115,16 @@ const Issuer = () => {
         setinputDID(value)
       }
 
-      const onVCschemaDataChange = (value: string) => {
-        setVCschemaData(value)
-      }
+    const jsonChange = (params: any) => {
+      console.log(params)
+      setsampleVCData(params)
+    }
 
-      const resetToDefaults = () => {
-        setVCschemaData(JSON.stringify(employmentVcData))
-        setinputDID(appState.didToken || '')
-      }
+    const vcTypeChange = (params: any) => {
+      console.log(params.target.value);
+      setVCtype(params.target.value)
+      setsampleVCData({...allDATA[params.target.value]})
+    }
 
 
     return (
@@ -133,19 +133,28 @@ const Issuer = () => {
                 <h3 className='tutorial__column-title'>Issuer</h3>
                 <div className='tutorial__column-steps'> */}
                 <div className='tutorial__step'>
+                  {/* <AffinidiVCTypeSelectList setCredentialRequirements={()=>{}} /> */}
+                    <Form.Group>
+                      <Form.Label>Select VC Type</Form.Label>
+                      <Form.Control as="select" custom onChange={vcTypeChange} value={VCtype}>
+                        {VCoptions.map((el,inx) => <option key={inx}>{el}</option>)}
+                      </Form.Control>
+                    </Form.Group>
+
                     <p className='tutorial__step-text'>
                     {/* <strong>Step 1:</strong>  */}
                     <strong>Issue unsigned VC</strong>
-                    <Button 
+                    {/* <Button 
                     style={{float: 'right'}}
                     onClick={e => resetToDefaults()}
-                    >Reset to defaults</Button>
+                    >Reset to defaults</Button> */}
                     </p>
                     <FormGroup
                       style={{margin: '30px 0'}}
                     >
                     <FormLabel>Enter VC data:</FormLabel>
-                    <FormControl
+                    <JSONEditor value={sampleVCData} type={VCtype} onChange={jsonChange} />
+                    {/* <FormControl
                       as="textarea"
                       rows={15}
                       placeholder="Enter VC data"
@@ -153,7 +162,7 @@ const Issuer = () => {
                       aria-describedby="basic-addon1"
                       value={VCschemaData}
                       onChange={e => onVCschemaDataChange(e.target.value)}
-                    />
+                    /> */}
                     </FormGroup>
                     <FormGroup
                       style={{margin: '30px 0'}}
@@ -169,7 +178,7 @@ const Issuer = () => {
                       onChange={e => onDidValueChange(e.target.value)}
                     />
                     </FormGroup>
-                    <Button onClick={issueEmploymentPersonVC}>Issue unsigned VC to 
+                    <Button onClick={issueUnsignedVC}>Issue unsigned VC to 
                     {
                       inputDID === appState.didToken ? ' self' : ' another did'
                     }
