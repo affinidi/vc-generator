@@ -2,14 +2,12 @@ import React, {useContext, useState} from 'react';
 import AppContext from 'context/app';
 import {Button, Form, FormControl, FormGroup, FormLabel} from 'react-bootstrap';
 import ApiService from 'utils/apiService';
-import {employmentVcData} from 'utils/vc-data-examples/employment';
 import {UnsignedW3cCredential, W3cCredential} from 'utils/apis';
 import 'pages/issuer/Issuer.scss'
 import ReactJson from 'react-json-view';
-import AffinidiVCTypeSelectList from 'components/vcData/AffindiVCTypeSelectList'
 import JSONEditor from 'components/editor/Editor';
 import * as allVCs from 'utils/vc-data-examples/index'
-import { cloneDeep, merge } from 'lodash-es'
+import { merge } from 'lodash-es'
 
 interface State {
     currentUnsignedVC: UnsignedW3cCredential | null,
