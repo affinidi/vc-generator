@@ -6,7 +6,6 @@
 
 stages:
   - install
-  - test
   - build
   - deploy
 
@@ -24,16 +23,6 @@ install:
     - echo "Install project dependecies"
     - npm install
     - echo "Install successful"
-
-test:
-  <<: *only-default
-  stage: test
-  image: node
-  script:
-    - echo "Testing App"
-    - npm test
-    - echo "Test successful"
-  coverage: /All\sfiles.*?\s+(\d+.\d+)/
 
 build:
   <<: *only-default
