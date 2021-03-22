@@ -10,7 +10,6 @@ const env = decodeEnv(process.env.REACT_APP_ENVIRONMENT || process.env.NODE_ENV)
 // expose specific env config variables
 const envConfig = {
   env,
-  accessApiKey: process.env.REACT_APP_API_KEY_HASH
 };
 
 export default envConfig
