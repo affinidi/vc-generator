@@ -1,0 +1,18 @@
+.table_root {
+	max-width: 1400px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	width: 70%;
+	background-color: #fff;
+	padding: 30px 40px;
+}
+
+.mb-16 {
+	padding-bottom: 16px;
+}
+
+.search {
+	width: 320px !important;
+}
