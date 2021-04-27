@@ -12,7 +12,7 @@ stages:
 install:
   <<: *only-default
   stage: install
-  image: node
+  image: node:14.0.0
   cache:
     paths:
       - node_modules/
@@ -21,15 +21,19 @@ install:
       - node_modules/
   script:
     - echo "Install project dependecies"
-    - npm install
+    - node -v
+    - npm -v
+    - npm ci
     - echo "Install successful"
 
 build:
   <<: *only-default
   stage: build
-  image: node
+  image: node:14.0.0
   script:
     - echo "Build started"
+    - node -v
+    - npm -v
     - npm run build
     - echo "Build successfull"
   artifacts:
