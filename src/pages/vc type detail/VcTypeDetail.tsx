@@ -60,7 +60,11 @@ const VcTypeDetail = () => {
 		{
 			type: 'EmailCredentialOrganizationV1',
 			description: 'The email of an organization',
-		},
+    },
+    {
+      type: 'EmployeeCredentialPersonV1',
+      description: 'Verifier if the person was an employee of the organization'
+    },
 		{
 			type: 'EmploymentCredentialOrganizationV1',
 			description:
@@ -76,6 +80,10 @@ const VcTypeDetail = () => {
 			description:
 				'The details of an employment offer such as the starting date, location, name of the interviewer, etc.',
 		},
+    {
+      type: 'ExperienceCredentialPersonV1',
+      description: 'Verifies experience of the employee'
+    },
 		{
 			type: 'GenderCredentialPersonV1',
 			description: 'Gender of an individual',
@@ -96,6 +104,10 @@ const VcTypeDetail = () => {
 			type: 'InsuranceAccountCredentialPersonV1',
 			description: 'Insurance details of an entity',
 		},
+    {
+      type: 'KudosCredentialPersonV1',
+      description: 'Appreciations from the colleagues in the organization'
+    },
 		{
 			type: 'LeanEntityCredentialOrganizationV1',
 			description:
@@ -134,6 +146,10 @@ const VcTypeDetail = () => {
 		{
 			type: 'PhoneCredentialPersonV1',
 			description: 'Phone number of an individual',
+		},
+		{
+			type: 'WinnerCredentialPersonV1',
+			description: 'Certificate/Awards from a event',
 		},
 	];
 
