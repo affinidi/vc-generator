@@ -46,7 +46,7 @@ security_scan:
   image:
     name: owasp/zap2docker-stable
   only:
-    - origin master
+    - master
   script: 
     - zap-baseline.py -t https://vc-generator.com/ || true
 
