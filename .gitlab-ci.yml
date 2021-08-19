@@ -7,6 +7,7 @@
 stages:
   - install
   - build
+  - security-check
   - deploy
 
 install:
@@ -39,6 +40,15 @@ build:
   artifacts:
     paths:
       - build/
+
+security_scan:
+  stage: security-check
+  image:
+    name: owasp/zap2docker-stable
+  only:
+    - origin master
+  script: 
+    - zap-baseline.py -t https://vc-generator.com/ || true
 
 deploy:
   <<: *only-default
