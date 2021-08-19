@@ -45,9 +45,8 @@ security_scan:
   stage: security-check
   image:
     name: owasp/zap2docker-stable
-# will uncomment the following lines before merging the MR
-#  only:
-#    - origin master
+  only:
+    - origin master
   script: 
     - zap-baseline.py -t https://vc-generator.com/ || true
 
